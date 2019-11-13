@@ -8,6 +8,7 @@ defmodule Poller.PollSupervisor do
     DynamicSupervisor.start_link(@name, args, name: @name)
   end
 
+  @spec start_poll(any) :: :ignore | {:error, any} | {:ok, pid} | {:ok, pid, any}
   def start_poll(district_id) do
     spec = {PollServer, district_id}
     DynamicSupervisor.start_child(@name, spec)
