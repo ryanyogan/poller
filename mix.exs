@@ -13,6 +13,7 @@ defmodule Poller.MixProject do
 
   def application do
     [
+      mod: {Poller, []},
       extra_applications: [:logger]
     ]
   end
