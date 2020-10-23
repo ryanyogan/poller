@@ -9,4 +9,10 @@ defmodule Poller.Question do
       description: description
     )
   end
+
+  def add_choice(question, choice) do
+    choices = [choice | question.choices]
+
+    %{question | choices: choices}
+  end
 end
