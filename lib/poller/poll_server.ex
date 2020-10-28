@@ -80,5 +80,6 @@ defmodule Poller.PollServer do
     end)
   end
 
-  def schedule_persist_votes(), do: Process.send_after(self(), :save, @persist_delta_time)
+  def schedule_persist_votes(),
+    do: Process.send_after(self(), :save, @persist_delta_time)
 end
