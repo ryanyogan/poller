@@ -19,6 +19,8 @@ defmodule Poller.MixProject do
   end
 
   defp deps do
-    []
+    [
+      {:poller_dal, path: "../poller_dal"}
+    ]
   end
 end

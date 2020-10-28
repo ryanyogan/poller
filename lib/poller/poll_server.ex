@@ -2,6 +2,7 @@ defmodule Poller.PollServer do
   use GenServer
 
   alias Poller.Poll
+  alias PollerDal.Questions
 
   # Public API's
   def start_link(district_id) do
@@ -22,12 +23,20 @@ defmodule Poller.PollServer do
     GenServer.call(district_id |> district_name(), :get_poll)
   end
 
-  defp district_name(district_id), do: :"district:#{district_id}"
+  def district_name(district_id), do: :"district:#{district_id}"
 
   # Callback API's
   def init(district_id) do
-    poll = Poll.new(district_id)
+    poll = init_poll(district_id)
     {:ok, poll}
+  end
+
+  defp init_poll(district_id) do
+    questions = Questions.list_questions_by_district_id(district_id)
+
+    district_id
+    |> Poll.new()
+    |> Poll.add_questions(questions)
   end
 
   def handle_call({:add_question, question}, _from, poll) do

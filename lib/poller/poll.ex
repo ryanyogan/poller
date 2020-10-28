@@ -3,16 +3,29 @@ defmodule Poller.Poll do
             questions: [],
             votes: %{}
 
+  alias Poller.Question
+
   def new(district_id) do
     __struct__(district_id: district_id)
+  end
+
+  def add_questions(poll, []), do: poll
+
+  def add_questions(poll, [question | questions]) do
+    votes = init_votes(poll.votes, question)
+    question = Question.new(question)
+
+    poll =
+      add_question(poll, question)
+      |> Map.put(:votes, votes)
+
+    add_questions(poll, questions)
   end
 
   def add_question(poll, question) do
     questions = [question | poll.questions]
 
-    votes = init_votes(poll.votes, question)
-
-    %{poll | questions: questions, votes: votes}
+    %{poll | questions: questions}
   end
 
   def vote(poll, choice_id) do
@@ -21,7 +34,10 @@ defmodule Poller.Poll do
 
   defp init_votes(votes, question) do
     question.choices
-    |> Enum.map(fn choice -> {choice.id, 0} end)
+    |> Enum.map(fn choice ->
+      votes = choice.votes || 0
+      {choice.id, votes}
+    end)
     |> Enum.into(votes)
   end
 
